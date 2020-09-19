@@ -12,7 +12,7 @@
 	<artifactId>jpa-hibernate-demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>jpa-hibernate-demo</name>
-	<description>JPA & Hibernate Demo</description>
+	<description>JPA &amp; Hibernate Demo</description>
 
 	<properties>
 		<java.version>11</java.version>
