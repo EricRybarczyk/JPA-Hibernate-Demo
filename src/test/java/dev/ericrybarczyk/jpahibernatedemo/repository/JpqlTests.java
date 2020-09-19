@@ -1,6 +1,5 @@
 package dev.ericrybarczyk.jpahibernatedemo.repository;
 
-
 import dev.ericrybarczyk.jpahibernatedemo.JpaHibernateDemoApplication;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
 import org.junit.jupiter.api.Test;
@@ -45,6 +44,20 @@ public class JpqlTests {
         courseListQuery.setParameter("id", ID_1);
         List<Course> resultList = courseListQuery.getResultList();
         assertEquals(1, resultList.size());
+    }
+
+    @Test
+    void namedQuery_findAllCourses_resultListContainsElements() throws Exception {
+        TypedQuery<Course> namedQuery = entityManager.createNamedQuery("query_get_all_courses", Course.class);
+        List<Course> resultList = namedQuery.getResultList();
+        assertTrue(resultList.size() > 0);
+    }
+
+    @Test
+    void namedQuery_findFunCourses_resultListContainsSingleElement() throws Exception {
+        TypedQuery<Course> namedQuery = entityManager.createNamedQuery("query_get_fun_courses", Course.class);
+        List<Course> resultList = namedQuery.getResultList();
+        assertEquals(1, resultList.size()); // Note: somewhat brittle, depends on specific data generated in data.sql
     }
 
 }
