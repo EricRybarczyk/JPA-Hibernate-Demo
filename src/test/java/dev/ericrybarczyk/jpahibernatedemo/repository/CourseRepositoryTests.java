@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -59,6 +60,13 @@ class CourseRepositoryTests {
 
         Course result = repository.findById(ID_1);
         assertEquals(UPDATED_COURSE_NAME, result.getName());
+    }
+
+    @Test
+    @DirtiesContext
+    void createCourseWithNullName_throwsDataIntegrityViolationException() throws Exception {
+        Course badCourse = new Course(null);
+        assertThrows(DataIntegrityViolationException.class, () -> { repository.save(badCourse); } );
     }
 
 }
