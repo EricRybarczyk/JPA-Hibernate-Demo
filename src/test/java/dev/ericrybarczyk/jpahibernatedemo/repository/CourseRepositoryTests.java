@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = JpaHibernateDemoApplication.class)
 class CourseRepositoryTests {
 
