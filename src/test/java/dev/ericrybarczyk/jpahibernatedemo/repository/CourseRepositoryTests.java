@@ -10,6 +10,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -67,6 +69,36 @@ class CourseRepositoryTests {
     void createCourseWithNullName_throwsDataIntegrityViolationException() throws Exception {
         Course badCourse = new Course(null);
         assertThrows(DataIntegrityViolationException.class, () -> { repository.save(badCourse); } );
+    }
+
+    @Test
+    @DirtiesContext
+    void updateCourse_createdDateNotModified() throws Exception {
+        Course course = repository.findById(ID_1);
+        LocalDateTime originalCreatedDate = LocalDateTime.from(course.getCreatedDate());
+
+        course.setName(UPDATED_COURSE_NAME);
+        repository.save(course);
+
+        Course result = repository.findById(ID_1);
+        LocalDateTime verifyCreatedDate = LocalDateTime.from(result.getCreatedDate());
+
+        assertEquals(originalCreatedDate, verifyCreatedDate);
+    }
+
+    @Test
+    @DirtiesContext
+    void updateCourse_lastUpdatedDateIsModified() throws Exception {
+        Course course = repository.findById(ID_1);
+        LocalDateTime originalUpdatedDate = LocalDateTime.from(course.getLastUpdatedDate());
+
+        course.setName(UPDATED_COURSE_NAME);
+        repository.save(course);
+
+        Course result = repository.findById(ID_1);
+        LocalDateTime revisedUpdatedDate = LocalDateTime.from(result.getLastUpdatedDate());
+
+        assertTrue(revisedUpdatedDate.isAfter(originalUpdatedDate));
     }
 
 }
