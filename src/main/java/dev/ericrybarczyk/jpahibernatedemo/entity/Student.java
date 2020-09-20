@@ -16,6 +16,7 @@ public class Student {
     @Column(nullable = false)
     private String lastName;
 
+    // NOTE: One-to-One relationships are eager-fetched
     @OneToOne
     private Passport passport;
 
