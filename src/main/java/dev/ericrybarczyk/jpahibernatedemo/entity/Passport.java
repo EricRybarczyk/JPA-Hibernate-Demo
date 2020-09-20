@@ -13,6 +13,10 @@ public class Passport {
     @Column(nullable = false)
     private String passportNumber;
 
+    // mappedBy specifies the field name in the object that owns this relationship
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "passport")
+    private Student student;
+
     protected Passport() {
     }
 
@@ -30,6 +34,14 @@ public class Passport {
 
     public void setPassportNumber(String passportNumber) {
         this.passportNumber = passportNumber;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     @Override
