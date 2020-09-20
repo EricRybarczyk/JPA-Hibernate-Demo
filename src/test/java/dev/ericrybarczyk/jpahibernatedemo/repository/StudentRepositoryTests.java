@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import javax.transaction.Transactional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = JpaHibernateDemoApplication.class)
@@ -19,6 +21,14 @@ class StudentRepositoryTests {
     private static final String FIRST_NAME = "firstname";
     private static final String LAST_NAME = "lastname";
     private static final String PASSPORT_NUMBER = "ABC123456";
+    private static final Long STUDENT_ID = 20001L;
+
+    @Test
+    @Transactional
+    void testStudentFetch_lazyLoadPassportIsRetrieved() throws Exception {
+        Student student = studentRepository.findById(STUDENT_ID);
+        assertNotNull(student.getPassport());
+    }
 
     @Test
     @DirtiesContext

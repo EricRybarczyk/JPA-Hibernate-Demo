@@ -16,8 +16,8 @@ public class Student {
     @Column(nullable = false)
     private String lastName;
 
-    // NOTE: One-to-One relationships are eager-fetched
-    @OneToOne
+    // NOTE: One-to-One relationships are eager-fetched by default.
+    @OneToOne(fetch = FetchType.LAZY)
     private Passport passport;
 
     protected Student() {
