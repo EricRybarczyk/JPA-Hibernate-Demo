@@ -1,4 +1,4 @@
-# jpa-hibernate-demo
+# JPA Hibernate Demo
 UNDER DEVELOPMENT, NOT COMPLETE (September 2020)
 
 This is a Spring Boot demo app which demonstrates the use of JPA and Hibernate. Unit Tests with JUnit 5 provide verification of intended functionality. 
