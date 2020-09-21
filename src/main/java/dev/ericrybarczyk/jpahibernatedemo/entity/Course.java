@@ -4,6 +4,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "courses")
@@ -25,6 +28,9 @@ public class Course {
 
     @UpdateTimestamp // Hibernate-specific annotations for timestamp auditing
     private LocalDateTime lastUpdatedDate;
+
+    @OneToMany(mappedBy = "course") // mappedBy specifies the field name in the object that owns this relationship
+    private List<Review> reviews = new ArrayList<>();
 
     protected Course() {
     }
@@ -51,6 +57,18 @@ public class Course {
 
     public LocalDateTime getLastUpdatedDate() {
         return lastUpdatedDate;
+    }
+
+    public List<Review> getReviews() {
+        return Collections.unmodifiableList(reviews);
+    }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
+    }
+
+    public void removeReview(Review review) {
+        this.reviews.remove(review);
     }
 
     @Override

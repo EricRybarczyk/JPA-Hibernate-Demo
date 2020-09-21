@@ -3,13 +3,11 @@ package dev.ericrybarczyk.jpahibernatedemo.repository;
 import dev.ericrybarczyk.jpahibernatedemo.JpaHibernateDemoApplication;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,8 +26,15 @@ class CourseRepositoryTests {
 
     @Test
     void findById_basicTestCase() throws Exception {
-        Course result = repository.findById(ID_1);
-        assertEquals("first course", result.getName());
+        Course course = repository.findById(ID_1);
+        assertEquals("first course", course.getName());
+    }
+
+    @Test
+    @Transactional
+    void findById_reviewsArePresent() throws Exception {
+        Course course = repository.findById(ID_1);
+        assertTrue(course.getReviews().size() > 0);
     }
 
     @Test

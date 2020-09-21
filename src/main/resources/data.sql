@@ -1,3 +1,5 @@
+-- At least some Unit Tests are likely to break when data changes are made here
+
 -- COURSES
 insert into courses (id, name, created_date, last_updated_date)
 values (10001, 'first course', LOCALTIMESTAMP(), LOCALTIMESTAMP());
@@ -25,9 +27,9 @@ insert into students (id, first_name, last_name, passport_id)
 values (20003, 'Barry', 'Bonds', 30003);
 
 -- REVIEWS
-insert into reviews (id, rating, review_content)
-values (40001, 'excellent', 'Excellent course');
-insert into reviews (id, rating, review_content)
-values (40002, 'average', 'Average course');
-insert into reviews (id, rating, review_content)
-values (40003, 'poor', 'Bad course');
+insert into reviews (id, rating, review_content, course_id)
+values (40001, 'excellent', 'Excellent course', 10001);
+insert into reviews (id, rating, review_content, course_id)
+values (40002, 'average', 'Average course', 10001);
+insert into reviews (id, rating, review_content, course_id)
+values (40003, 'poor', 'Bad course', 10002);

@@ -16,6 +16,9 @@ public class Review {
     @Column(nullable = false)
     private String rating;
 
+    @ManyToOne
+    private Course course;
+
     protected Review() {
     }
 
@@ -42,6 +45,14 @@ public class Review {
 
     public void setRating(String rating) {
         this.rating = rating;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     @Override

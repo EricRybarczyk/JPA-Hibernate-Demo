@@ -26,13 +26,19 @@ create table STUDENTS
 
 alter table STUDENTS
     add constraint FK_student_passport_id_ISA_passport_id
-        foreign key (passport_id)
-            references passports;
+        foreign key (PASSPORT_ID)
+            references PASSPORTS;
 
 create table REVIEWS
 (
 	ID BIGINT,
 	RATING VARCHAR(20) not null,
 	REVIEW_CONTENT VARCHAR(255),
+	COURSE_ID BIGINT not null,
     primary key (ID)
 );
+
+alter table REVIEWS
+    add constraint FK_review_course_id_ISA_course_id
+        foreign key (COURSE_ID)
+            references COURSES;
