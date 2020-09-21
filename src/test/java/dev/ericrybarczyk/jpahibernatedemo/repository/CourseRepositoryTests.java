@@ -2,6 +2,7 @@ package dev.ericrybarczyk.jpahibernatedemo.repository;
 
 import dev.ericrybarczyk.jpahibernatedemo.JpaHibernateDemoApplication;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
+import dev.ericrybarczyk.jpahibernatedemo.entity.Review;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,7 @@ class CourseRepositoryTests {
     private CourseRepository repository;
 
     private static final long ID_1 = 10001L;
+    private static final long ID_COURSE_WITH_NO_REVIEWS = 10003;
     private static final long ID_FOR_DELETE = 9999L;
     private static final long INVALID_ID = 8675309L;
     private static final String NEW_COURSE_NAME = "new course name";
@@ -103,6 +105,21 @@ class CourseRepositoryTests {
         LocalDateTime revisedUpdatedDate = LocalDateTime.from(result.getLastUpdatedDate());
 
         assertTrue(revisedUpdatedDate.isAfter(originalUpdatedDate));
+    }
+
+    @Test
+    @Transactional
+    @DirtiesContext
+    void testSaveNewReview_ExistingCourse() throws Exception {
+        Course course = repository.findById(ID_COURSE_WITH_NO_REVIEWS);
+        assertEquals(0, course.getReviews().size());
+
+        Review review = new Review("test review one", "3");
+        repository.addReviewToCourse(ID_COURSE_WITH_NO_REVIEWS, review);
+
+        Course updatedCourse = repository.findById(ID_COURSE_WITH_NO_REVIEWS);
+        assertEquals(1, updatedCourse.getReviews().size());
+        assertEquals("test review one", updatedCourse.getReviews().get(0).getReviewContent());
     }
 
 }

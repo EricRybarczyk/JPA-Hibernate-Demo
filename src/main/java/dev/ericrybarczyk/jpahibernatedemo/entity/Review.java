@@ -16,7 +16,7 @@ public class Review {
     @Column(nullable = false)
     private String rating;
 
-    @ManyToOne
+    @ManyToOne // default here is Eager Fetch
     private Course course;
 
     protected Review() {

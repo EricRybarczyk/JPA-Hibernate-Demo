@@ -1,6 +1,7 @@
 package dev.ericrybarczyk.jpahibernatedemo.repository;
 
 import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
+import dev.ericrybarczyk.jpahibernatedemo.entity.Review;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -78,4 +79,10 @@ public class CourseRepository {
         return true;
     }
 
+    public void addReviewToCourse(Long courseId, Review review) {
+        Course course = entityManager.find(Course.class, courseId);
+        course.addReview(review);
+        review.setCourse(course);
+        entityManager.persist(review);
+    }
 }
