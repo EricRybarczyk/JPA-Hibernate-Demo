@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-
 import javax.transaction.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = JpaHibernateDemoApplication.class)
 class StudentRepositoryTests {
@@ -22,6 +22,7 @@ class StudentRepositoryTests {
     private static final String LAST_NAME = "lastname";
     private static final String PASSPORT_NUMBER = "ABC123456";
     private static final Long STUDENT_ID = 20001L;
+    private static final int COURSE_COUNT_FOR_STUDENT_20001 = 2;
 
     @Test
     @Transactional
@@ -53,6 +54,13 @@ class StudentRepositoryTests {
         Student resultStudent = studentRepository.findById(student.getId());
         assertNotNull(resultStudent.getPassport());
         assertEquals(resultStudent.getPassport().getId(), passport.getId());
+    }
+
+    @Test
+    @Transactional
+    void retrieveStudentWithCourses_basicTest() throws Exception {
+        Student student = studentRepository.findById(STUDENT_ID);
+        assertEquals(COURSE_COUNT_FOR_STUDENT_20001, student.getCourses().size());
     }
 
 }

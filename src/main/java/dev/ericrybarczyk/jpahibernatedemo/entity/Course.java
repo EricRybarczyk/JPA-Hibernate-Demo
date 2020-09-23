@@ -32,6 +32,9 @@ public class Course {
     @OneToMany(mappedBy = "course") // mappedBy specifies the field name in the object that owns this relationship
     private List<Review> reviews = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "courses") // either side can "own" the relationship in ManyToMany since the result is a join table. Also, this is lazy fetch by default.
+    private List<Student> students = new ArrayList<>();
+
     protected Course() {
     }
 
@@ -69,6 +72,18 @@ public class Course {
 
     public void removeReview(Review review) {
         this.reviews.remove(review);
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void addStudent(Student student) {
+        this.students.add(student);
+    }
+
+    public void removeStudent(Student student) {
+        this.students.remove(student);
     }
 
     @Override

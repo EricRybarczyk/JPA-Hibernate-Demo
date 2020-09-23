@@ -33,3 +33,12 @@ insert into reviews (id, rating, review_content, course_id)
 values (40002, 'average', 'Average course', 10001);
 insert into reviews (id, rating, review_content, course_id)
 values (40003, 'poor', 'Bad course', 10002);
+
+insert into student_course (student_id, course_id)
+values (20001, 10001);
+insert into student_course (student_id, course_id)
+values (20002, 10001);
+insert into student_course (student_id, course_id)
+values (20003, 10001);
+insert into student_course (student_id, course_id)
+values (20001, 10002);

@@ -25,6 +25,7 @@ class CourseRepositoryTests {
     private static final long INVALID_ID = 8675309L;
     private static final String NEW_COURSE_NAME = "new course name";
     private static final String UPDATED_COURSE_NAME = "updated course name";
+    private static final int STUDENT_COUNT_IN_COURSE_100001 = 3;
 
     @Test
     void findById_basicTestCase() throws Exception {
@@ -120,6 +121,13 @@ class CourseRepositoryTests {
         Course updatedCourse = repository.findById(ID_COURSE_WITH_NO_REVIEWS);
         assertEquals(1, updatedCourse.getReviews().size());
         assertEquals("test review one", updatedCourse.getReviews().get(0).getReviewContent());
+    }
+
+    @Test
+    @Transactional
+    void retrieveCourseWithStudents_basicTest() throws Exception {
+        Course course = repository.findById(ID_1);
+        assertEquals(STUDENT_COUNT_IN_COURSE_100001, course.getStudents().size());
     }
 
 }
