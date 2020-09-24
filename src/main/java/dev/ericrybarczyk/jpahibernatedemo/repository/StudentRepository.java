@@ -1,5 +1,6 @@
 package dev.ericrybarczyk.jpahibernatedemo.repository;
 
+import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Passport;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Student;
 import org.slf4j.Logger;
@@ -50,6 +51,14 @@ public class StudentRepository {
         } else {
             entityManager.merge(student);
         }
+        return student;
+    }
+
+    public Student saveEnrollment(Student student, Course course) {
+        student.addCourse(course);
+        course.addStudent(student);
+        entityManager.persist(student);
+        entityManager.persist(course);
         return student;
     }
 

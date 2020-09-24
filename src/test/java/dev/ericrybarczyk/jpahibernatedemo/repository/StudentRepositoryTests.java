@@ -1,6 +1,7 @@
 package dev.ericrybarczyk.jpahibernatedemo.repository;
 
 import dev.ericrybarczyk.jpahibernatedemo.JpaHibernateDemoApplication;
+import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Passport;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Student;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,9 @@ class StudentRepositoryTests {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     private static final String FIRST_NAME = "firstname";
     private static final String LAST_NAME = "lastname";
@@ -61,6 +65,20 @@ class StudentRepositoryTests {
     void retrieveStudentWithCourses_basicTest() throws Exception {
         Student student = studentRepository.findById(STUDENT_ID);
         assertEquals(COURSE_COUNT_FOR_STUDENT_20001, student.getCourses().size());
+    }
+
+    @Test
+    @Transactional
+    @DirtiesContext
+    void enrollStudentInCourse_relationshipIsCreatedInBothDirections() throws Exception {
+        Student student = studentRepository.save(new Student("Test", "Student"));
+        Course course = courseRepository.save(new Course("Test Course"));
+
+        Student resultStudent = studentRepository.saveEnrollment(student, course);
+        assertEquals(student.getId(), resultStudent.getId());
+        assertEquals(1, resultStudent.getCourses().size());
+        assertEquals(course.getId(), resultStudent.getCourses().get(0).getId());
+
     }
 
 }
