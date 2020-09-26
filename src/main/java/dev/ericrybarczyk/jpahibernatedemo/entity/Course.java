@@ -29,7 +29,9 @@ public class Course {
     @UpdateTimestamp // Hibernate-specific annotations for timestamp auditing
     private LocalDateTime lastUpdatedDate;
 
-    @OneToMany(mappedBy = "course") // mappedBy specifies the field name in the object that owns this relationship
+    // mappedBy specifies the field name in the object that owns this relationship,
+    // cascade allows JpaRepository to persist the Review when this Course is persisted
+    @OneToMany(mappedBy = "course", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToMany(mappedBy = "courses") // either side can "own" the relationship in ManyToMany since the result is a join table. Also, this is lazy fetch by default.
