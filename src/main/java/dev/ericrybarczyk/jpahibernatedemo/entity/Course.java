@@ -1,5 +1,6 @@
 package dev.ericrybarczyk.jpahibernatedemo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
@@ -35,6 +36,7 @@ public class Course {
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToMany(mappedBy = "courses") // either side can "own" the relationship in ManyToMany since the result is a join table. Also, this is lazy fetch by default.
+    @JsonIgnore
     private List<Student> students = new ArrayList<>();
 
     protected Course() {
