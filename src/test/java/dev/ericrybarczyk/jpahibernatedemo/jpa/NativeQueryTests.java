@@ -1,4 +1,4 @@
-package dev.ericrybarczyk.jpahibernatedemo.repository;
+package dev.ericrybarczyk.jpahibernatedemo.jpa;
 
 import dev.ericrybarczyk.jpahibernatedemo.JpaHibernateDemoApplication;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
