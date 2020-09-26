@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -70,5 +71,20 @@ public class StudentRepository {
         entityManager.remove(student);
         return true;
     }
+
+
+    // JPQL Queries added for learning purposes
+
+    public List<Student> findStudentsWithValueWithinPassportNumber() {
+        return entityManager.createQuery("Select s from Student s where s.passport.passportNumber like '%1234%'", Student.class).getResultList();
+    }
+
+    /*
+        Other JPQL criteria & function examples for use in queries:
+        BETWEEN 100 and 1000
+        IS NULL
+        upper, lower, trim, length
+     */
+
 
 }

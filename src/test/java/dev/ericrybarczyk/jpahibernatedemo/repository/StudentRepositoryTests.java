@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import javax.transaction.Transactional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -79,6 +80,12 @@ class StudentRepositoryTests {
         assertEquals(1, resultStudent.getCourses().size());
         assertEquals(course.getId(), resultStudent.getCourses().get(0).getId());
 
+    }
+
+    @Test
+    void testFindStudentsWithValueWithinPassportNumber() throws Exception {
+        List<Student> result = studentRepository.findStudentsWithValueWithinPassportNumber();
+        assertEquals(2, result.size());
     }
 
 }

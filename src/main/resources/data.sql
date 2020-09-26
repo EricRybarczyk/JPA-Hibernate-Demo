@@ -12,11 +12,11 @@ values (9999, 'delete this course', LOCALTIMESTAMP(), LOCALTIMESTAMP());
 
 -- PASSPORTS
 insert into passports (id, passport_number)
-values (30001, 'J9398003');
+values (30001, 'J0012340023B45');
 insert into passports (id, passport_number)
-values (30002, 'E2218355');
+values (30002, 'E0022Y18355DCB');
 insert into passports (id, passport_number)
-values (30003, 'B0173762');
+values (30003, 'B001234B173762');
 
 -- STUDENTS
 insert into students (id, first_name, last_name, passport_id)

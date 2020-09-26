@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -84,5 +85,22 @@ public class CourseRepository {
         course.addReview(review);
         review.setCourse(course);
         entityManager.persist(review);
+    }
+
+    // JPQL Queries added for learning purposes
+
+    // example JPQL query making use of the defined relationships
+    public List<Course> findCoursesWithNoStudents() {
+        return entityManager.createQuery("Select c from Course c where c.students is empty", Course.class).getResultList();
+    }
+
+    // example JPQL query making use of the defined relationships
+    public List<Course> findCoursesWithMultipleStudents() {
+        return entityManager.createQuery("Select c from Course c where size(c.students) >= 2", Course.class).getResultList();
+    }
+
+    // example JPQL query making use of the defined relationships
+    public List<Course> getAllCoursesSortedByNumberOfStudents() {
+        return entityManager.createQuery("Select c from Course c order by size(c.students) asc", Course.class).getResultList();
     }
 }

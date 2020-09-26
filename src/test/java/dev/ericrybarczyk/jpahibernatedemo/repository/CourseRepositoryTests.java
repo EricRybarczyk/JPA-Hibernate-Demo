@@ -10,6 +10,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CourseRepositoryTests {
 
     @Autowired
-    private CourseRepository repository;
+    private CourseRepository courseRepository;
 
     private static final long ID_1 = 10001L;
     private static final long ID_COURSE_WITH_NO_REVIEWS = 10003;
@@ -29,45 +31,45 @@ class CourseRepositoryTests {
 
     @Test
     void findById_basicTestCase() throws Exception {
-        Course course = repository.findById(ID_1);
+        Course course = courseRepository.findById(ID_1);
         assertEquals("first course", course.getName());
     }
 
     @Test
     @Transactional
     void findById_reviewsArePresent() throws Exception {
-        Course course = repository.findById(ID_1);
+        Course course = courseRepository.findById(ID_1);
         assertTrue(course.getReviews().size() > 0);
     }
 
     @Test
     @DirtiesContext
     void deleteById_validIdValue() throws Exception {
-        assertTrue(repository.deleteById(ID_FOR_DELETE));
-        assertNull(repository.findById(ID_FOR_DELETE));
+        assertTrue(courseRepository.deleteById(ID_FOR_DELETE));
+        assertNull(courseRepository.findById(ID_FOR_DELETE));
     }
 
     @Test
     void deleteById_invalidIdValue() throws Exception {
-        assertFalse(repository.deleteById(INVALID_ID));
+        assertFalse(courseRepository.deleteById(INVALID_ID));
     }
 
     @Test
     @DirtiesContext
     void saveCourse_newCourseEntity() throws Exception {
-        Course savedCourse = repository.save(new Course(NEW_COURSE_NAME));
+        Course savedCourse = courseRepository.save(new Course(NEW_COURSE_NAME));
         assertEquals(NEW_COURSE_NAME, savedCourse.getName());
     }
 
     @Test
     @DirtiesContext
     void saveCourse_existingCourseEntityWithModifiedValue() throws Exception {
-        Course course = repository.findById(ID_1);
+        Course course = courseRepository.findById(ID_1);
         course.setName(UPDATED_COURSE_NAME);
 
-        repository.save(course);
+        courseRepository.save(course);
 
-        Course result = repository.findById(ID_1);
+        Course result = courseRepository.findById(ID_1);
         assertEquals(UPDATED_COURSE_NAME, result.getName());
     }
 
@@ -75,19 +77,19 @@ class CourseRepositoryTests {
     @DirtiesContext
     void createCourseWithNullName_throwsDataIntegrityViolationException() throws Exception {
         Course badCourse = new Course(null);
-        assertThrows(DataIntegrityViolationException.class, () -> { repository.save(badCourse); } );
+        assertThrows(DataIntegrityViolationException.class, () -> { courseRepository.save(badCourse); } );
     }
 
     @Test
     @DirtiesContext
     void updateCourse_createdDateNotModified() throws Exception {
-        Course course = repository.findById(ID_1);
+        Course course = courseRepository.findById(ID_1);
         LocalDateTime originalCreatedDate = LocalDateTime.from(course.getCreatedDate());
 
         course.setName(UPDATED_COURSE_NAME);
-        repository.save(course);
+        courseRepository.save(course);
 
-        Course result = repository.findById(ID_1);
+        Course result = courseRepository.findById(ID_1);
         LocalDateTime verifyCreatedDate = LocalDateTime.from(result.getCreatedDate());
 
         assertEquals(originalCreatedDate, verifyCreatedDate);
@@ -96,13 +98,13 @@ class CourseRepositoryTests {
     @Test
     @DirtiesContext
     void updateCourse_lastUpdatedDateIsModified() throws Exception {
-        Course course = repository.findById(ID_1);
+        Course course = courseRepository.findById(ID_1);
         LocalDateTime originalUpdatedDate = LocalDateTime.from(course.getLastUpdatedDate());
 
         course.setName(UPDATED_COURSE_NAME);
-        repository.save(course);
+        courseRepository.save(course);
 
-        Course result = repository.findById(ID_1);
+        Course result = courseRepository.findById(ID_1);
         LocalDateTime revisedUpdatedDate = LocalDateTime.from(result.getLastUpdatedDate());
 
         assertTrue(revisedUpdatedDate.isAfter(originalUpdatedDate));
@@ -112,13 +114,13 @@ class CourseRepositoryTests {
     @Transactional
     @DirtiesContext
     void testSaveNewReview_ExistingCourse() throws Exception {
-        Course course = repository.findById(ID_COURSE_WITH_NO_REVIEWS);
+        Course course = courseRepository.findById(ID_COURSE_WITH_NO_REVIEWS);
         assertEquals(0, course.getReviews().size());
 
         Review review = new Review("test review one", "3");
-        repository.addReviewToCourse(ID_COURSE_WITH_NO_REVIEWS, review);
+        courseRepository.addReviewToCourse(ID_COURSE_WITH_NO_REVIEWS, review);
 
-        Course updatedCourse = repository.findById(ID_COURSE_WITH_NO_REVIEWS);
+        Course updatedCourse = courseRepository.findById(ID_COURSE_WITH_NO_REVIEWS);
         assertEquals(1, updatedCourse.getReviews().size());
         assertEquals("test review one", updatedCourse.getReviews().get(0).getReviewContent());
     }
@@ -126,8 +128,35 @@ class CourseRepositoryTests {
     @Test
     @Transactional
     void retrieveCourseWithStudents_basicTest() throws Exception {
-        Course course = repository.findById(ID_1);
+        Course course = courseRepository.findById(ID_1);
         assertEquals(STUDENT_COUNT_IN_COURSE_100001, course.getStudents().size());
+    }
+
+    @Test
+    void testFindCoursesWithNoStudents_returnsExpectedCount() throws Exception {
+        List<Course> coursesWithNoStudents = courseRepository.findCoursesWithNoStudents();
+        assertEquals(2, coursesWithNoStudents.size());
+    }
+
+    @Test
+    void testFindCoursesWithMultipleStudents_returnsExpectedCount() throws Exception {
+        List<Course> coursesWithNoStudents = courseRepository.findCoursesWithMultipleStudents();
+        assertEquals(1, coursesWithNoStudents.size());
+    }
+
+    @Test
+    @Transactional
+    void testGetAllCoursesSortedByNumberOfStudents_returnSortOrderIsAscending() throws Exception {
+        List<Course> coursesWithNoStudents = courseRepository.getAllCoursesSortedByNumberOfStudents();
+        int[] countsInOriginalOrder = new int[coursesWithNoStudents.size()];
+        int[] countsSortedBySystem = new int[coursesWithNoStudents.size()];
+        for (int i = 0; i < coursesWithNoStudents.size(); i++) {
+            int countOfStudents = coursesWithNoStudents.get(i).getStudents().size();
+            countsInOriginalOrder[i] = countOfStudents;
+            countsSortedBySystem[i] = countOfStudents;
+        }
+        Arrays.sort(countsSortedBySystem);
+        assertArrayEquals(countsSortedBySystem, countsInOriginalOrder);
     }
 
 }

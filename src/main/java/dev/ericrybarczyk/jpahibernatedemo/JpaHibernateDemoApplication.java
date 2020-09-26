@@ -1,6 +1,5 @@
 package dev.ericrybarczyk.jpahibernatedemo;
 
-import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
 import dev.ericrybarczyk.jpahibernatedemo.repository.CourseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,8 @@ public class JpaHibernateDemoApplication implements CommandLineRunner {
 //		Course course = courseRepository.findById(10001L);
 //		logger.info("\nCourse -> {}", course);
 
-		courseRepository.playWithEntityManager();
+        // don't leave this enabled, it adds data which may cause unit tests to fail
+		// courseRepository.playWithEntityManager();
 	}
 
 }
