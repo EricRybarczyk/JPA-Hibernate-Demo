@@ -31,6 +31,7 @@ class CourseSpringDataJpaRepositoryTests {
     private static final long ID_COURSE_WITH_NO_REVIEWS = 10003;
     private static final String NEW_COURSE_NAME = "new course name";
     private static final String UPDATED_COURSE_NAME = "updated course name";
+    private static final String EXISTING_COURSE_NAME = "second course";
 
     /*
         NOTE: Many of these tests are functionally equivalent to the tests in
@@ -184,6 +185,47 @@ class CourseSpringDataJpaRepositoryTests {
 
         Page<Course> coursePage3 = courseRepository.findAll(coursePage2.nextPageable());
         assertEquals(5, coursePage3.getSize());
+    }
+
+    @Test
+    void testFindByNameCustomJpaRepositoryMethod() throws Exception {
+        List<Course> courseList = courseRepository.findByName(EXISTING_COURSE_NAME);
+        assertEquals(1, courseList.size());
+    }
+
+    @Test
+    void testFindByNameLikeCustomJpaRepositoryMethod() throws Exception {
+        List<Course> courseList = courseRepository.findByNameLikeIgnoreCase("%FUN%");
+        assertEquals(1, courseList.size());
+    }
+
+    @Test
+    @Transactional
+    @DirtiesContext
+    void testDeleteByNameCustomJpaRepositoryMethod() throws Exception {
+        List<Course> deletedCourses = courseRepository.deleteByNameLikeIgnoreCase("%delete%");
+        assertEquals(1, deletedCourses.size());
+
+        Optional<Course> optionalCourse = courseRepository.findById(ID_FOR_DELETE);
+        assertTrue(optionalCourse.isEmpty());
+    }
+
+    @Test
+    void testFindFunCoursesJpqlCustomJpaRepositoryMethod() throws Exception {
+        List<Course> funCourses = courseRepository.findFunCoursesJpql();
+        assertEquals(1, funCourses.size());
+    }
+
+    @Test
+    void testFindFunCoursesNativeCustomJpaRepositoryMethod() throws Exception {
+        List<Course> funCourses = courseRepository.findFunCoursesNative();
+        assertEquals(1, funCourses.size());
+    }
+
+    @Test
+    void testFindFunCoursesNamedCustomJpaRepositoryMethod() throws Exception {
+        List<Course> funCourses = courseRepository.findFunCoursesNamed();
+        assertEquals(1, funCourses.size());
     }
 
 }
