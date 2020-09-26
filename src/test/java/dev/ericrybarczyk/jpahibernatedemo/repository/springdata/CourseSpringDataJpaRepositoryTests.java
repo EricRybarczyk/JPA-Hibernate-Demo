@@ -1,5 +1,6 @@
 package dev.ericrybarczyk.jpahibernatedemo.repository.springdata;
 
+import com.google.common.collect.Comparators;
 import dev.ericrybarczyk.jpahibernatedemo.JpaHibernateDemoApplication;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Review;
@@ -7,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -154,6 +158,32 @@ class CourseSpringDataJpaRepositoryTests {
                   See: https://stackoverflow.com/a/60024246/798642 for more info.
          */
         assertEquals("test review one", updatedCourse.getReviews().get(0).getReviewContent());
+    }
+
+    @Test
+    void testSortedResults() throws Exception {
+        List<Course> courseList = courseRepository.findAll(Sort.by(Sort.Direction.DESC, "name"));
+        // Google, thank you for Guava!
+        assertTrue(Comparators.isInOrder(courseList, (o1, o2) -> o2.getName().compareTo(o1.getName()))); // comparator for descending order
+    }
+
+    @Test
+    @DirtiesContext
+    void testPaginationResults() throws Exception {
+        // add 11 Courses so we have 15 in total (data.sql inserts 4 Courses)
+        for (int i = 0; i < 11; i++) {
+            courseRepository.save(new Course(String.format("Course %s for Pagination", i)));
+        }
+
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<Course> coursePage1 = courseRepository.findAll(pageRequest);
+        assertEquals(5, coursePage1.getSize());
+
+        Page<Course> coursePage2 = courseRepository.findAll(coursePage1.nextPageable());
+        assertEquals(5, coursePage2.getSize());
+
+        Page<Course> coursePage3 = courseRepository.findAll(coursePage2.nextPageable());
+        assertEquals(5, coursePage3.getSize());
     }
 
 }
