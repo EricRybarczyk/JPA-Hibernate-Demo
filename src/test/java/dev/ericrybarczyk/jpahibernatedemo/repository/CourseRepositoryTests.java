@@ -22,6 +22,7 @@ class CourseRepositoryTests {
     private CourseRepository courseRepository;
 
     private static final long ID_1 = 10001L;
+    private static final String FIRST_COURSE_NAME = "first course";
     private static final long ID_COURSE_WITH_NO_REVIEWS = 10003;
     private static final long ID_FOR_DELETE = 9999L;
     private static final long INVALID_ID = 8675309L;
@@ -32,7 +33,22 @@ class CourseRepositoryTests {
     @Test
     void findById_basicTestCase() throws Exception {
         Course course = courseRepository.findById(ID_1);
-        assertEquals("first course", course.getName());
+        assertEquals(FIRST_COURSE_NAME, course.getName());
+    }
+
+    @Test
+    @Transactional
+    void findById_firstLevelCacheDemo() throws Exception {
+        Course course = courseRepository.findById(ID_1);
+
+        // next call returns result from first level cache BECAUSE @Transactional means only a single
+        // PersistenceContext for both repository calls and first level cache is scoped to the PersistenceContext.
+        // The test runner execution output also shows only a single SQL query was run
+        Course courseAgain = courseRepository.findById(ID_1);
+
+        // assertions do not prove L1C was used   ¯\_(ツ)_/¯ ... oh well.
+        assertEquals(FIRST_COURSE_NAME, course.getName());
+        assertEquals(FIRST_COURSE_NAME, courseAgain.getName());
     }
 
     @Test
