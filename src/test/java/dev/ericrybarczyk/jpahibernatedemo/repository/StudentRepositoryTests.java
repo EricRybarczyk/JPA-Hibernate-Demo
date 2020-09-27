@@ -1,6 +1,7 @@
 package dev.ericrybarczyk.jpahibernatedemo.repository;
 
 import dev.ericrybarczyk.jpahibernatedemo.JpaHibernateDemoApplication;
+import dev.ericrybarczyk.jpahibernatedemo.entity.Address;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Passport;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Student;
@@ -86,6 +87,19 @@ class StudentRepositoryTests {
     void testFindStudentsWithValueWithinPassportNumber() throws Exception {
         List<Student> result = studentRepository.findStudentsWithValueWithinPassportNumber();
         assertEquals(2, result.size());
+    }
+
+    @Test
+    @DirtiesContext
+    void testAddAddressToStudent() throws Exception {
+        Student student = studentRepository.findById(STUDENT_ID);
+        final String LINE_1 = "street line";
+        student.setAddress(new Address(LINE_1, "po box", "city name"));
+        studentRepository.save(student);
+
+        Student savedStudent = studentRepository.findById(STUDENT_ID);
+        assertNotNull(savedStudent.getAddress());
+        assertEquals(LINE_1, savedStudent.getAddress().getLine1());
     }
 
 }
