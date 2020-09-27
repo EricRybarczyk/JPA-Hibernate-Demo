@@ -13,16 +13,18 @@ public class Review {
     @Column(nullable = true)
     private String reviewContent;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String rating;
+    private ReviewRating rating;
 
     @ManyToOne // default here is Eager Fetch
     private Course course;
 
     protected Review() {
+        rating = ReviewRating.THREE;
     }
 
-    public Review(String reviewContent, String rating) {
+    public Review(String reviewContent, ReviewRating rating) {
         this.reviewContent = reviewContent;
         this.rating = rating;
     }
@@ -39,11 +41,11 @@ public class Review {
         this.reviewContent = reviewContent;
     }
 
-    public String getRating() {
+    public ReviewRating getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(ReviewRating rating) {
         this.rating = rating;
     }
 

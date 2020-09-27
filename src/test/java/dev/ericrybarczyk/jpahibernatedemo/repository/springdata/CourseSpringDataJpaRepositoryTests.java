@@ -4,6 +4,7 @@ import com.google.common.collect.Comparators;
 import dev.ericrybarczyk.jpahibernatedemo.JpaHibernateDemoApplication;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Review;
+import dev.ericrybarczyk.jpahibernatedemo.entity.ReviewRating;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -142,7 +143,7 @@ class CourseSpringDataJpaRepositoryTests {
         Course course = optionalCourse.get();
         assertEquals(0, course.getReviews().size());
 
-        Review review = new Review("test review one", "3");
+        Review review = new Review("test review one", ReviewRating.THREE);
         review.setCourse(course);
         course.addReview(review);
         courseRepository.save(course);
@@ -159,6 +160,7 @@ class CourseSpringDataJpaRepositoryTests {
                   See: https://stackoverflow.com/a/60024246/798642 for more info.
          */
         assertEquals("test review one", updatedCourse.getReviews().get(0).getReviewContent());
+        assertEquals(ReviewRating.THREE, updatedCourse.getReviews().get(0).getRating());
     }
 
     @Test

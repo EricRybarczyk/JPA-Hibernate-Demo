@@ -3,6 +3,7 @@ package dev.ericrybarczyk.jpahibernatedemo.repository;
 import dev.ericrybarczyk.jpahibernatedemo.JpaHibernateDemoApplication;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Course;
 import dev.ericrybarczyk.jpahibernatedemo.entity.Review;
+import dev.ericrybarczyk.jpahibernatedemo.entity.ReviewRating;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -133,12 +134,13 @@ class CourseRepositoryTests {
         Course course = courseRepository.findById(ID_COURSE_WITH_NO_REVIEWS);
         assertEquals(0, course.getReviews().size());
 
-        Review review = new Review("test review one", "3");
+        Review review = new Review("test review one", ReviewRating.THREE);
         courseRepository.addReviewToCourse(ID_COURSE_WITH_NO_REVIEWS, review);
 
         Course updatedCourse = courseRepository.findById(ID_COURSE_WITH_NO_REVIEWS);
         assertEquals(1, updatedCourse.getReviews().size());
         assertEquals("test review one", updatedCourse.getReviews().get(0).getReviewContent());
+        assertEquals(ReviewRating.THREE, updatedCourse.getReviews().get(0).getRating());
     }
 
     @Test

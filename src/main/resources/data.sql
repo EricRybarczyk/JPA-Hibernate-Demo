@@ -28,11 +28,11 @@ values (20003, 'Barry', 'Bonds', 30003);
 
 -- REVIEWS
 insert into reviews (id, rating, review_content, course_id)
-values (40001, 'excellent', 'Excellent course', 10001);
+values (40001, 'FIVE', 'Excellent course', 10001);
 insert into reviews (id, rating, review_content, course_id)
-values (40002, 'average', 'Average course', 10001);
+values (40002, 'THREE', 'Average course', 10001);
 insert into reviews (id, rating, review_content, course_id)
-values (40003, 'poor', 'Bad course', 10002);
+values (40003, 'ONE', 'Bad course', 10002);
 
 insert into student_course (student_id, course_id)
 values (20001, 10001);
