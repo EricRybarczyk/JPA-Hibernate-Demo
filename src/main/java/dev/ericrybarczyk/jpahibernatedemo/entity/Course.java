@@ -15,6 +15,7 @@ import java.util.List;
 @Table(name = "courses")
 @NamedQueries(value = {
         @NamedQuery(name = "query_get_all_courses", query = "select c from Course c where c.isDeleted = false"),
+        @NamedQuery(name = "query_get_all_courses_join_fetch", query = "select c from Course c join fetch c.students s where c.isDeleted = false"),
         @NamedQuery(name = "query_get_fun_courses", query = "select c from Course c where c.name like '%fun%' and c.isDeleted = false")
 })
 @Cacheable
