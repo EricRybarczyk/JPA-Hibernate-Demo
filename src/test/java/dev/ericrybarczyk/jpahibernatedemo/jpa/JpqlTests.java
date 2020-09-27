@@ -22,14 +22,14 @@ public class JpqlTests {
 
     @Test
     void typedQuery_listOfCourses_resultListContainsElements() throws Exception {
-        TypedQuery<Course> courseListQuery = entityManager.createQuery("Select c from Course c", Course.class);
+        TypedQuery<Course> courseListQuery = entityManager.createQuery("Select c from Course c where c.isDeleted = false", Course.class);
         List<Course> resultList = courseListQuery.getResultList();
         assertTrue(resultList.size() > 0);
     }
 
     @Test
     void typedQuery_listOfCoursesMatchingWhereClause_resultListContainsElements() throws Exception {
-        TypedQuery<Course> courseListQuery = entityManager.createQuery("Select c from Course c where c.name like '%course%'", Course.class);
+        TypedQuery<Course> courseListQuery = entityManager.createQuery("Select c from Course c where c.name like '%course%' and c.isDeleted = false", Course.class);
         List<Course> resultList = courseListQuery.getResultList();
         assertTrue(resultList.size() > 0);
     }
@@ -60,7 +60,7 @@ public class JpqlTests {
     @Test
     void joinTest_retrieveCoursesJoinedWithStudents() throws Exception {
         // this just feels wrong with the unchecked assignment, but this is how the tutorial example worked
-        List<Object[]> resultList = entityManager.createQuery("select c, s from Course c join c.students s").getResultList();
+        List<Object[]> resultList = entityManager.createQuery("select c, s from Course c join c.students s where c.isDeleted = false").getResultList();
         assertTrue(resultList.size() > 0);
         for (Object[] result : resultList) {
             assertTrue(result[0] instanceof Course); // Course was first in the join, so it is the first array element type
@@ -73,7 +73,7 @@ public class JpqlTests {
     @Test
     void leftJoinTest_retrieveCoursesJoinedWithStudents() throws Exception {
         // again, this feels wrong with the unchecked assignment, but this is how the tutorial example worked
-        List<Object[]> resultList = entityManager.createQuery("select c, s from Course c left join c.students s").getResultList();
+        List<Object[]> resultList = entityManager.createQuery("select c, s from Course c left join c.students s where c.isDeleted = false").getResultList();
         assertTrue(resultList.size() > 0);
         boolean didContainCourseWithNoStudents = false;
         for (Object[] result : resultList) {
@@ -90,7 +90,7 @@ public class JpqlTests {
     @Test
     void crossJoin_verifyExpectedCount() {
         // not sure a cross join by itself will be useful very often...
-        List<Object[]> resultList = entityManager.createQuery("select c, s from Course c, Student s").getResultList();
+        List<Object[]> resultList = entityManager.createQuery("select c, s from Course c, Student s where c.isDeleted = false").getResultList();
         // 4 courses, 3 students == 12 in a cross join
         assertEquals(12, resultList.size());
     }

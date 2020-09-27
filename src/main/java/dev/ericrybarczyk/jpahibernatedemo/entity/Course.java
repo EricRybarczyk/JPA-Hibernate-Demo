@@ -2,7 +2,9 @@ package dev.ericrybarczyk.jpahibernatedemo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,10 +14,12 @@ import java.util.List;
 @Entity
 @Table(name = "courses")
 @NamedQueries(value = {
-        @NamedQuery(name = "query_get_all_courses", query = "select c from Course c"),
-        @NamedQuery(name = "query_get_fun_courses", query = "select c from Course c where c.name like '%fun%'")
+        @NamedQuery(name = "query_get_all_courses", query = "select c from Course c where c.isDeleted = false"),
+        @NamedQuery(name = "query_get_fun_courses", query = "select c from Course c where c.name like '%fun%' and c.isDeleted = false")
 })
 @Cacheable
+@SQLDelete(sql="update courses set is_deleted=true where id=?") // Hibernate-specific annotation to configure soft-delete
+@Where(clause = "is_deleted=false") // Hibernate-specific annotation to exclude soft-deleted entities
 public class Course {
 
     @Id
@@ -30,6 +34,18 @@ public class Course {
 
     @UpdateTimestamp // Hibernate-specific annotations for timestamp auditing
     private LocalDateTime lastUpdatedDate;
+
+    private boolean isDeleted; // soft-delete support
+
+    @PreRemove
+    private void preRemove() {
+        /*  Lifecycle callback, implementing soft-delete.
+            The @Where annotation on this entity only updates the database, it does not modify the object itself
+            because there is no connection between the @Where clause and the isDeleted field. This @PreRemove hook
+            updates the object - and this includes updating the object in cache if applicable.
+         */
+        this.isDeleted = true;
+    }
 
     // mappedBy specifies the field name in the object that owns this relationship,
     // cascade allows JpaRepository to persist the Review when this Course is persisted

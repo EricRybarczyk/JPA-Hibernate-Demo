@@ -24,7 +24,7 @@ public class NativeQueryTests {
 
     @Test
     void nativeQuery_findAllCourses() throws Exception {
-        Query nativeQuery = entityManager.createNativeQuery("select * from courses", Course.class);
+        Query nativeQuery = entityManager.createNativeQuery("select * from courses where is_deleted=0", Course.class);
         List resultList = nativeQuery.getResultList();
         assertTrue(resultList.size() > 0);
     }
@@ -49,7 +49,7 @@ public class NativeQueryTests {
     @Transactional
     @DirtiesContext
     void nativeQuery_updateManyRowsAtOnce() throws Exception {
-        Query nativeQuery = entityManager.createNativeQuery("update courses set last_updated_date = LOCALTIMESTAMP()", Course.class);
+        Query nativeQuery = entityManager.createNativeQuery("update courses set last_updated_date = LOCALTIMESTAMP() where is_deleted=0", Course.class);
         int rowsUpdated = nativeQuery.executeUpdate();
         assertTrue(rowsUpdated > 0);
     }
